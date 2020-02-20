@@ -177,6 +177,11 @@ get_dns_servers ()
   fi
 }
 
+echo ""
+echo "Starting Airship deployment..."
+replace_charts
+sleep 1
+
 if grep -q "10.96.0.10" "/etc/resolv.conf"; then
   echo "Not changing DNS servers, /etc/resolv.conf already updated."
 else
@@ -189,9 +194,6 @@ else
   sed -i "s/8.8.4.4/$NS2/" $DNS_CONFIG_FILE
 fi
 
-echo ""
-echo "Starting Airship deployment..."
-replace_charts
 sleep 1
 
 
