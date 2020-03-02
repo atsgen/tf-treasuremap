@@ -201,3 +201,9 @@ ${AIAB_DIR}/common/deploy-airship.sh demo
 cid=$(docker ps | awk '/k8s_contrail-webui_contrail-webui/{print $1}')
 docker exec -it $cid bash -c "printf \"\nconfig.staticAuth = [];\nconfig.staticAuth[0] = {};\nconfig.staticAuth[0].username = 'admin';\nconfig.staticAuth[0].password = 'contrail123';\nconfig.staticAuth[0].roles = ['cloudAdmin'];\n\" >> /etc/contrail/config.global.js"
 docker exec -it $cid tail -6 /etc/contrail/config.global.js
+
+# add kubernetes dashboard
+kubectl apply -f ${AIAB_DIR}/k8s-dashboard.yaml
+export dashboard=$(kubectl -n kube-system get secret | grep namespace-controller-token | awk '{print $1}')
+kubectl describe secret  $dashboard -n kube-system | grep "token:" | awk '{print $2}' > $HOME/dashboard-token.txt
+echo " Kubernetes Dashboard is avialble on https://$LOCAL_IP:8443 and token is available at $HOME/dashboard-token.txt "
